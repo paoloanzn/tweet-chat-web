@@ -65,7 +65,9 @@ const routes = [
         logger.error(`Error in generateText: ${error}`);
         if (!responseStream.writableEnded) {
           responseStream.write(
-            `event: error\ndata: ${JSON.stringify({ message: "Internal Server Error." })}\n\n`,
+            `event: error\ndata: ${JSON.stringify({
+              message: "Internal Server Error.",
+            })}\n\n`,
           );
         }
       } finally {
@@ -98,8 +100,8 @@ const routes = [
           logger.error(`Error executing query: ${error}`);
           reply.status(500).send({
             status: "error",
-            message: "Internal Server Error while adding new Persona."
-          })
+            message: "Internal Server Error while adding new Persona.",
+          });
           return;
         }
         reply.send({ status: "success", data });
@@ -108,6 +110,79 @@ const routes = [
         reply.status(500).send({
           status: "error",
           message: "Internal Server Error while adding new Persona.",
+        });
+      } finally {
+        await personaManager.close();
+      }
+    },
+  },
+  {
+    method: "GET",
+    url: "/list",
+    preHandler: (request, reply, done) => {
+      authMiddleware(request, reply, done);
+    },
+    handler: async (request, reply) => {
+      const personaManager = new PersonaManager();
+      try {
+        const userId = request.user.sub;
+        const { data, error } = await personaManager.getUserPersonas(userId);
+        if (error) {
+          logger.error(`Error executing query: ${error}`);
+          reply.status(500).send({
+            status: "error",
+            message: "Internal Server Error while fetching personas.",
+          });
+          return;
+        }
+        reply.send({ status: "success", data });
+      } catch (error) {
+        logger.error(`Error while fetching personas: ${error}`);
+        reply.status(500).send({
+          status: "error",
+          message: "Internal Server Error while fetching personas.",
+        });
+      } finally {
+        await personaManager.close();
+      }
+    },
+  },
+  {
+    method: "POST",
+    url: "/delete",
+    preHandler: (request, reply, done) => {
+      authMiddleware(request, reply, done);
+    },
+    handler: async (request, reply) => {
+      const { personaId } = request.body;
+      if (!personaId) {
+        reply.status(400).send({
+          status: "error",
+          message: "Missing personaId in request body.",
+        });
+        return;
+      }
+      const personaManager = new PersonaManager();
+      try {
+        const userId = request.user.sub;
+        const { data, error } = await personaManager.deletePersonaForUser(
+          userId,
+          personaId,
+        );
+        if (error) {
+          logger.error(`Error executing query: ${error}`);
+          reply.status(500).send({
+            status: "error",
+            message: "Internal Server Error while deleting persona.",
+          });
+          return;
+        }
+        reply.send({ status: "success", data });
+      } catch (error) {
+        logger.error(`Error while deleting persona: ${error}`);
+        reply.status(500).send({
+          status: "error",
+          message: "Internal Server Error while deleting persona.",
         });
       } finally {
         await personaManager.close();
