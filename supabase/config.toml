@@ -53,7 +53,7 @@ schema_paths = [
     "./schemas/users_personas.sql",
     "./schemas/conversations.sql",
     "./schemas/create_backend_role.sql",
-    "./schemas/*.sql",
+    "./schemas/scraper_accounts.sql",
     "./schemas/enable_RLS.sql"
 ]
 

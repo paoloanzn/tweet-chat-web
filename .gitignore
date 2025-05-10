@@ -25,4 +25,5 @@ dist-client
 *.sw?
 
 codebase.md
+accounts.csv
 .env

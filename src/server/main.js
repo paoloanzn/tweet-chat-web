@@ -6,10 +6,9 @@ import authRoute from "./routes/auth.js";
 import personaRoute from "./routes/chat/persona.js";
 import conversationRoute from "./routes/chat/conversation.js";
 import process from "node:process";
-import { loadEnv } from "./setup.js";
+import { setupServer } from "./setup.js";
 
-loadEnv(); // Ensure every env variable is correctly loaded.
-console.log(process.env);
+await setupServer();
 
 const fastify = Fastify({ logger: true });
 

@@ -3,6 +3,10 @@ import path from "path";
 import process from "node:process";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import fs from "fs/promises";
+import { parse } from "csv-parse/sync";
+import ScraperAccountsManager from "./db/ScraperAccountsManager.js";
+import logger from "./lib/logger.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -27,4 +31,54 @@ export function loadEnv() {
       }
     });
   }
+}
+
+/**
+ * Loads scraper accounts from CSV file into the database.
+ */
+async function loadScraperAccounts() {
+  try {
+    const csvPath = path.resolve(__dirname, "lib/scraper/accounts.csv");
+    const fileContent = await fs.readFile(csvPath, "utf-8");
+    
+    // Parse CSV content
+    const records = parse(fileContent, {
+      columns: true,
+      skip_empty_lines: true,
+    });
+
+    const accountManager = new ScraperAccountsManager();
+    
+    for (const record of records) {
+      const result = await accountManager.addAccount({
+        username: record.username,
+        email: record.email,
+        password: record.password,
+        cookies: null, // Initially no cookies
+      });
+
+      if (result.error) {
+        logger.error(`Failed to add scraper account ${record.username}: ${result.error}`);
+      } else {
+        logger.info(`Successfully processed scraper account: ${record.username}`);
+      }
+    }
+
+    await accountManager.close();
+  } catch (error) {
+    logger.error("Error loading scraper accounts:", error);
+  }
+}
+
+/**
+ * Main setup function that runs all initialization steps
+ */
+export async function setupServer() {
+  // Load environment variables first
+  loadEnv();
+  
+  // Load scraper accounts into database
+  await loadScraperAccounts();
+  
+  // Add any future setup steps here
 }
