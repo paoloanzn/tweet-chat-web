@@ -97,7 +97,9 @@ const routes = [
       const personaManager = new PersonaManager();
       try {
         const userId = request.user.sub;
-        const { data, error } = await personaManager.addPersonaForUser(userId, {twitterHandle});
+        const { data, error } = await personaManager.addPersonaForUser(userId, {
+          twitterHandle,
+        });
         if (error) {
           logger.error(`Error executing query: ${error}`);
           reply.status(500).send({

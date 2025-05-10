@@ -40,7 +40,7 @@ async function loadScraperAccounts() {
   try {
     const csvPath = path.resolve(__dirname, "lib/scraper/accounts.csv");
     const fileContent = await fs.readFile(csvPath, "utf-8");
-    
+
     // Parse CSV content
     const records = parse(fileContent, {
       columns: true,
@@ -48,7 +48,7 @@ async function loadScraperAccounts() {
     });
 
     const accountManager = new ScraperAccountsManager();
-    
+
     for (const record of records) {
       const result = await accountManager.addAccount({
         username: record.username,
@@ -58,9 +58,13 @@ async function loadScraperAccounts() {
       });
 
       if (result.error) {
-        logger.error(`Failed to add scraper account ${record.username}: ${result.error}`);
+        logger.error(
+          `Failed to add scraper account ${record.username}: ${result.error}`,
+        );
       } else {
-        logger.info(`Successfully processed scraper account: ${record.username}`);
+        logger.info(
+          `Successfully processed scraper account: ${record.username}`,
+        );
       }
     }
 
@@ -76,9 +80,9 @@ async function loadScraperAccounts() {
 export async function setupServer() {
   // Load environment variables first
   loadEnv();
-  
+
   // Load scraper accounts into database
   await loadScraperAccounts();
-  
+
   // Add any future setup steps here
 }

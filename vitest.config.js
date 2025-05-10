@@ -1,7 +1,7 @@
 export default {
   test: {
-    environment: 'node',
+    environment: "node",
     globals: true,
-    watch: false
-  }
+    watch: false,
+  },
 };

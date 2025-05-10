@@ -10,8 +10,8 @@ const routes = [
     handler: (_, reply) => {
       reply.status(200).send({
         status: "success",
-        message: "online"
-      })
+        message: "online",
+      });
       return;
     },
   },

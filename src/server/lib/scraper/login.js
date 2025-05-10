@@ -9,7 +9,7 @@ import ScraperAccountsManager from "../../db/ScraperAccountsManager.js";
 /**
  * Performs login for the scraper instance by retrieving credentials from the database
  * and handling both cookie and password-based authentication.
- * 
+ *
  * @param {import('./scraper.js').Scraper} scraper - The scraper instance to authenticate
  * @returns {Promise<LoginResult>} The login result
  */
@@ -41,11 +41,12 @@ export async function login(scraper) {
 
       // Parse and format cookies for the scraper
       let rawCookies = account.cookies;
-      if (typeof rawCookies === 'string') {
+      if (typeof rawCookies === "string") {
         rawCookies = JSON.parse(rawCookies);
       }
       const parsedCookies = rawCookies.map(
-        (cookie) => `${cookie.key}=${cookie.value}; domain=.twitter.com; path=/`
+        (cookie) =>
+          `${cookie.key}=${cookie.value}; domain=.twitter.com; path=/`,
       );
 
       await scraper.setCookies(parsedCookies);
@@ -70,7 +71,9 @@ export async function login(scraper) {
 
         return {
           success: isLoggedIn ?? false,
-          message: isLoggedIn ? null : "Failed to log in with username and password",
+          message: isLoggedIn
+            ? null
+            : "Failed to log in with username and password",
         };
       } catch (error) {
         return { success: false, message: error.toString() };

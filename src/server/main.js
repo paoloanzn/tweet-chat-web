@@ -7,8 +7,13 @@ import personaRoute from "./routes/chat/persona.js";
 import conversationRoute from "./routes/chat/conversation.js";
 import process from "node:process";
 import { setupServer } from "./setup.js";
+import { getScraper } from "./lib/scraper/scraper.js";
+import { login } from "./lib/scraper/login.js";
 
 await setupServer();
+const scraper = getScraper();
+const { success } = await login(scraper);
+console.log(success);
 
 const fastify = Fastify({ logger: true });
 

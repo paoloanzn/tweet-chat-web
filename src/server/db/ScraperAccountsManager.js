@@ -75,4 +75,4 @@ class ScraperAccountsManager extends IDatabase {
   }
 }
 
-export default ScraperAccountsManager; 
+export default ScraperAccountsManager;

@@ -25,8 +25,11 @@ const routes = [
       const conversationManager = new ConversationManager();
       try {
         const userId = request.user.sub;
-        console.log(userId)
-        const { data, error } = await conversationManager.getConversations(userId, personaId);
+        console.log(userId);
+        const { data, error } = await conversationManager.getConversations(
+          userId,
+          personaId,
+        );
         if (error) {
           logger.error(`Error executing query: ${error}`);
           reply.status(500).send({
@@ -69,7 +72,7 @@ const routes = [
         const { data, error } = await conversationManager.addConversation(
           userId,
           personaId,
-          conversationData
+          conversationData,
         );
         if (error) {
           logger.error(`Error executing query: ${error}`);
@@ -112,7 +115,7 @@ const routes = [
       try {
         const { data, error } = await conversationManager.updateConversation(
           conversationId,
-          conversationData
+          conversationData,
         );
         if (error) {
           logger.error(`Error executing query: ${error}`);
@@ -152,7 +155,8 @@ const routes = [
 
       const conversationManager = new ConversationManager();
       try {
-        const { data, error } = await conversationManager.deleteConversation(conversationId);
+        const { data, error } =
+          await conversationManager.deleteConversation(conversationId);
         if (error) {
           logger.error(`Error executing query: ${error}`);
           reply.status(500).send({

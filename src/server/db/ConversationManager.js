@@ -11,7 +11,9 @@ class ConversationManager extends IDatabase {
   async getConversations(userId, personaId) {
     const sql = await this.loadQuery("get_conversations.sql");
     if (!sql) {
-      throw new Error("Query not authorized or not found: get_conversations.sql");
+      throw new Error(
+        "Query not authorized or not found: get_conversations.sql",
+      );
     }
     return this.query(sql, [userId, personaId]);
   }
@@ -27,9 +29,15 @@ class ConversationManager extends IDatabase {
   async addConversation(userId, personaId, conversationData) {
     const sql = await this.loadQuery("insert_conversation.sql");
     if (!sql) {
-      throw new Error("Query not authorized or not found: insert_conversation.sql");
+      throw new Error(
+        "Query not authorized or not found: insert_conversation.sql",
+      );
     }
-    return this.query(sql, [userId, personaId, JSON.stringify(conversationData)]);
+    return this.query(sql, [
+      userId,
+      personaId,
+      JSON.stringify(conversationData),
+    ]);
   }
 
   /**
@@ -42,7 +50,9 @@ class ConversationManager extends IDatabase {
   async updateConversation(conversationId, conversationData) {
     const sql = await this.loadQuery("update_conversation.sql");
     if (!sql) {
-      throw new Error("Query not authorized or not found: update_conversation.sql");
+      throw new Error(
+        "Query not authorized or not found: update_conversation.sql",
+      );
     }
     return this.query(sql, [conversationId, JSON.stringify(conversationData)]);
   }
@@ -56,7 +66,9 @@ class ConversationManager extends IDatabase {
   async deleteConversation(conversationId) {
     const sql = await this.loadQuery("delete_conversation.sql");
     if (!sql) {
-      throw new Error("Query not authorized or not found: delete_conversation.sql");
+      throw new Error(
+        "Query not authorized or not found: delete_conversation.sql",
+      );
     }
     return this.query(sql, [conversationId]);
   }

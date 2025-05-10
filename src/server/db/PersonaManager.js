@@ -39,7 +39,7 @@ class PersonaManager extends IDatabase {
       );
     }
     // Sample static values for a new persona.
-    const sampleName = options.twitterHandle ?? "elonmusk"
+    const sampleName = options.twitterHandle ?? "elonmusk";
     const sampleData = JSON.stringify({}); // Empty sample data
     return this.query(sql, [sampleName, sampleData, userId]);
   }
