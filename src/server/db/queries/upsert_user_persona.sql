@@ -6,4 +6,5 @@ WITH inserted_persona AS (
 )
 INSERT INTO user_personas(user_id, persona_id)
 SELECT $3, id FROM inserted_persona
-ON CONFLICT (user_id, persona_id) DO NOTHING;
+ON CONFLICT (user_id, persona_id) DO NOTHING
+RETURNING persona_id;
