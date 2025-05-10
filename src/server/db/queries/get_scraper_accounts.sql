@@ -1,0 +1,1 @@
+SELECT * FROM scraper_accounts ORDER BY created_at ASC; 

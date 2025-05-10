@@ -2,6 +2,21 @@ import IDatabase from "./db.js";
 
 class ScraperAccountsManager extends IDatabase {
   /**
+   * Gets all scraper accounts ordered by creation date.
+   *
+   * @returns {Promise<{ data: Array, error: any }>}
+   */
+  async getAccounts() {
+    const sql = await this.loadQuery("get_scraper_accounts.sql");
+    if (!sql) {
+      throw new Error(
+        "Query not authorized or not found: get_scraper_accounts.sql",
+      );
+    }
+    return this.query(sql);
+  }
+
+  /**
    * Gets a scraper account by username.
    *
    * @param {string} username - The account's username
@@ -40,6 +55,23 @@ class ScraperAccountsManager extends IDatabase {
       account.password,
       account.cookies ? JSON.stringify(account.cookies) : null,
     ]);
+  }
+
+  /**
+   * Updates the cookies for a scraper account.
+   *
+   * @param {string} username - The account's username
+   * @param {object} cookies - The cookies data to update
+   * @returns {Promise<{ data: Array, error: any }>}
+   */
+  async updateAccountCookies(username, cookies) {
+    const sql = await this.loadQuery("update_scraper_account_cookies.sql");
+    if (!sql) {
+      throw new Error(
+        "Query not authorized or not found: update_scraper_account_cookies.sql",
+      );
+    }
+    return this.query(sql, [username, JSON.stringify(cookies)]);
   }
 }
 
