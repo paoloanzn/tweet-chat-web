@@ -58,7 +58,7 @@ class IDatabase {
   async query(sql, params = []) {
     let client = null;
     try {
-      const client = await this.pool.connect();
+      client = await this.pool.connect();
       const result = await client.query(sql, params);
       return { data: result.rows, error: null };
     } catch (error) {
