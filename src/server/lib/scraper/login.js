@@ -40,7 +40,11 @@ export async function login(scraper) {
       }
 
       // Parse and format cookies for the scraper
-      const parsedCookies = JSON.parse(account.cookies).map(
+      let rawCookies = account.cookies;
+      if (typeof rawCookies === 'string') {
+        rawCookies = JSON.parse(rawCookies);
+      }
+      const parsedCookies = rawCookies.map(
         (cookie) => `${cookie.key}=${cookie.value}; domain=.twitter.com; path=/`
       );
 
