@@ -28,6 +28,10 @@ const routes = [
         }
 
         logger.info(`Successfully registered new user: ${email}`);
+        reply.status(200).send({
+          status: "success",
+          message: "Sign-up was successful."
+        })
         return;
       } catch (error) {
         logger.error(`Error during sign-up: ${error}`);
@@ -57,7 +61,11 @@ const routes = [
           password,
         });
         if (error) {
-          throw new Error(error);
+          reply.status(400).send({
+            status: "error",
+            message: error
+          })
+          return;
         }
 
         logger.log(`User ${email} logged in.`);

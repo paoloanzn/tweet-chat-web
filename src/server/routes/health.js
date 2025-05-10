@@ -7,8 +7,12 @@ const routes = [
   {
     method: "GET",
     url: "/status",
-    handler: () => {
-      return "online";
+    handler: (_, reply) => {
+      reply.status(200).send({
+        status: "success",
+        message: "online"
+      })
+      return;
     },
   },
   {

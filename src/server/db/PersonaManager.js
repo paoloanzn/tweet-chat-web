@@ -24,9 +24,10 @@ class PersonaManager extends IDatabase {
    * Instead, sample empty data is inserted.
    *
    * @param {string} userId - The user's ID.
+   * @param {object} options
    * @returns {Promise<{ data: Array, error: any }>}
    */
-  async addPersonaForUser(userId) {
+  async addPersonaForUser(userId, options) {
     // TODO: Implement the actual logic for adding a new persona.
     console.log(
       "addPersonaForUser: Not fully implemented. Inserting sample data.",
@@ -38,7 +39,7 @@ class PersonaManager extends IDatabase {
       );
     }
     // Sample static values for a new persona.
-    const sampleName = "elonmusk";
+    const sampleName = options.twitterHandle ?? "elonmusk"
     const sampleData = JSON.stringify({}); // Empty sample data
     return this.query(sql, [sampleName, sampleData, userId]);
   }

@@ -14,6 +14,7 @@ const MAX_MESSAGE_LENGTH = 5 * 1000;
 const personaRoute = new Route("/persona");
 
 const routes = [
+  /*
   {
     method: "POST",
     url: "/new/message/:conversationId",
@@ -77,6 +78,7 @@ const routes = [
       }
     },
   },
+  */
   {
     method: "POST",
     url: "/add-new",
@@ -95,7 +97,7 @@ const routes = [
       const personaManager = new PersonaManager();
       try {
         const userId = request.user.sub;
-        const { data, error } = await personaManager.addPersonaForUser(userId);
+        const { data, error } = await personaManager.addPersonaForUser(userId, {twitterHandle});
         if (error) {
           logger.error(`Error executing query: ${error}`);
           reply.status(500).send({

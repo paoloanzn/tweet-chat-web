@@ -4,6 +4,7 @@ import healthRoute from "./routes/health.js";
 import logger from "./lib/logger.js";
 import authRoute from "./routes/auth.js";
 import personaRoute from "./routes/chat/persona.js";
+import conversationRoute from "./routes/chat/conversation.js";
 import process from "node:process";
 import { loadEnv } from "./setup.js";
 
@@ -21,6 +22,7 @@ await fastify.register(cors, {
 healthRoute.register(fastify);
 authRoute.register(fastify);
 personaRoute.register(fastify);
+conversationRoute.register(fastify);
 
 // run the server!
 const start = async () => {
