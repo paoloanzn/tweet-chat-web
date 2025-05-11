@@ -15,7 +15,7 @@ const scraper = getScraper();
 const { success } = await login(scraper);
 console.log(success);
 
-const fastify = Fastify({ logger: true });
+const fastify = Fastify({ logger: false });
 
 await fastify.register(cors, {
   origin: "http://localhost:5173", // Allow requests specifically from your frontend origin
