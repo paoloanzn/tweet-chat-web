@@ -1,19 +1,4 @@
-import { Scraper as TwitterScraper } from "agent-twitter-client";
-
-/**
- * Extended Twitter scraper class.
- *
- * Inherits from the base TwitterScraper class to provide Twitter data scraping functionality.
- * @extends TwitterScraper
- */
-class Scraper extends TwitterScraper {
-  /**
-   * Creates an instance of Scraper.
-   */
-  constructor() {
-    super();
-  }
-}
+import { Scraper } from "agent-twitter-client";
 
 /** @type {Scraper|null} Singleton instance of the Scraper class */
 let scraper = null;

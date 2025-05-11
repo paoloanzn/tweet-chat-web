@@ -86,19 +86,28 @@ const routes = [
       authMiddleware(request, reply, done);
     },
     handler: async (request, reply) => {
-      const { twitterHandle } = request.body;
-      if (!twitterHandle) {
+      const { user, maxTweets } = request.body;
+      if (!user || !maxTweets) {
         reply.status(400).send({
           status: "error",
-          message: "Missing twitterHandle in request body.",
+          message: "Missing user or maxTweets in request body.",
         });
         return;
       }
+      if (typeof maxTweets != "number") {
+        reply.status(400).send({
+          status: "error",
+          message: 'maxTweets must be of type "number".',
+        });
+        return;
+      }
+
       const personaManager = new PersonaManager();
       try {
         const userId = request.user.sub;
         const { data, error } = await personaManager.addPersonaForUser(userId, {
-          twitterHandle,
+          user,
+          maxTweets,
         });
         if (error) {
           logger.error(`Error executing query: ${error}`);

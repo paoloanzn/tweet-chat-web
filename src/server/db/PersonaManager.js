@@ -1,3 +1,5 @@
+import { createPersona } from "../lib/persona/create-persona.js";
+import { getScraper } from "../lib/scraper/scraper.js";
 import IDatabase from "./db.js";
 
 class PersonaManager extends IDatabase {
@@ -18,30 +20,28 @@ class PersonaManager extends IDatabase {
   }
 
   /**
-   * Adds a new persona for a user.
-   *
-   * Note: The logic for actually adding a new persona is left blank.
-   * Instead, sample empty data is inserted.
+   * Adds a new persona for a user by scraping their data and storing it in the database.
    *
    * @param {string} userId - The user's ID.
-   * @param {object} options
-   * @returns {Promise<{ data: Array, error: any }>}
+   * @param {object} options - Configuration options
+   * @param {string} options.user - Username to scrape data from
+   * @param {number} options.maxTweets - Maximum number of tweets to analyze
+   * @returns {Promise<{ data: Array, error: any }>} - Returns the created persona data or error
+   * @throws {Error} If the SQL query is not found or if there's an error creating the persona
    */
   async addPersonaForUser(userId, options) {
-    // TODO: Implement the actual logic for adding a new persona.
-    console.log(
-      "addPersonaForUser: Not fully implemented. Inserting sample data.",
-    );
     const sql = await this.loadQuery("upsert_user_persona.sql");
     if (!sql) {
       throw new Error(
         "Query not authorized or not found: upsert_user_persona.sql",
       );
     }
-    // Sample static values for a new persona.
-    const sampleName = options.twitterHandle ?? "elonmusk";
-    const sampleData = JSON.stringify({}); // Empty sample data
-    return this.query(sql, [sampleName, sampleData, userId]);
+    const { user, maxTweets } = options;
+    const { data, error } = await createPersona(user, maxTweets, getScraper());
+    if (error) {
+      throw new Error(`Error while creating persona: ${error}`);
+    }
+    return this.query(sql, [user, JSON.stringify(data), userId]);
   }
 
   /**
