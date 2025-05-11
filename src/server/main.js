@@ -9,6 +9,7 @@ import process from "node:process";
 import { setupServer } from "./setup.js";
 import { getScraper } from "./lib/scraper/scraper.js";
 import { login } from "./lib/scraper/login.js";
+import chatRoute from "./routes/chat/chat.js";
 
 await setupServer();
 const scraper = getScraper();
@@ -27,6 +28,7 @@ healthRoute.register(fastify);
 authRoute.register(fastify);
 personaRoute.register(fastify);
 conversationRoute.register(fastify);
+chatRoute.register(fastify);
 
 // run the server!
 const start = async () => {

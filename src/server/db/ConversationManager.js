@@ -4,8 +4,8 @@ class ConversationManager extends IDatabase {
   /**
    * Gets all conversations for a given user and persona.
    *
-   * @param {string} userId - The user’s ID.
-   * @param {string} personaId - The persona’s ID.
+   * @param {string} userId - The user's ID.
+   * @param {string} personaId - The persona's ID.
    * @returns {Promise<{ data: Array, error: any }>}
    */
   async getConversations(userId, personaId) {
@@ -21,8 +21,8 @@ class ConversationManager extends IDatabase {
   /**
    * Inserts a new conversation.
    *
-   * @param {string} userId - The user’s ID.
-   * @param {string} personaId - The persona’s ID.
+   * @param {string} userId - The user's ID.
+   * @param {string} personaId - The persona's ID.
    * @param {object} conversationData - The conversation data as a JSON object.
    * @returns {Promise<{ data: Array, error: any }>}
    */
@@ -71,6 +71,23 @@ class ConversationManager extends IDatabase {
       );
     }
     return this.query(sql, [conversationId]);
+  }
+
+  /**
+   * Gets a conversation by its ID and verifies user ownership.
+   *
+   * @param {string} conversationId - The conversation's ID.
+   * @param {string} userId - The user's ID to verify ownership.
+   * @returns {Promise<{ data: Array, error: any }>}
+   */
+  async getConversation(conversationId, userId) {
+    const sql = await this.loadQuery("get_conversation.sql");
+    if (!sql) {
+      throw new Error(
+        "Query not authorized or not found: get_conversation.sql",
+      );
+    }
+    return this.query(sql, [conversationId, userId]);
   }
 }
 
