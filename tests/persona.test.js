@@ -42,13 +42,33 @@ describe("Persona Endpoints", () => {
           Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({
-          twitterHandle: "testuser",
+          user: "apollonator3000",
+          maxTweets: 20,
         }),
       });
 
       const data = await response.json();
       expect(response.status).toBe(200);
       expect(data.status).toBe("success");
+      expect(data.data).toBeDefined();
+      expect(data.data[0]).toBeDefined();
+      expect(data.data[0].persona_id).toBeDefined();
+    });
+
+    it("should fail with invalid parameters", async () => {
+      const response = await fetch("http://localhost:3000/persona/add-new", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          user: "", // Invalid user
+          maxTweets: "not a number", // Invalid maxTweets type
+        }),
+      });
+
+      expect(response.status).toBe(400);
     });
   });
 
@@ -79,7 +99,8 @@ describe("Persona Endpoints", () => {
             Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify({
-            twitterHandle: "deletetest",
+            user: "elonmusk",
+            maxTweets: 5,
           }),
         },
       );

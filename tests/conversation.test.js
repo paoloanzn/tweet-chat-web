@@ -46,7 +46,8 @@ describe("Conversation Endpoints", () => {
           Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({
-          twitterHandle: "testconversations",
+          user: "apollonator3000",
+          maxTweets: 20,
         }),
       },
     );
