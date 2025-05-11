@@ -25,9 +25,7 @@ export async function createPersona(user, maxTweets, scraper) {
     maxTweets <= MAX_TWEETS_LIMIT ? maxTweets : MAX_TWEETS_LIMIT,
   );
 
-  const tweets = new Array(
-    maxTweets <= MAX_TWEETS_LIMIT ? maxTweets : MAX_TWEETS_LIMIT,
-  );
+  const tweets = new Array();
 
   for await (const tweet of tweetsIterator) {
     if (tweet) {
