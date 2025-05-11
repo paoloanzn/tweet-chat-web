@@ -19,7 +19,11 @@ class Route {
 
   /**
    * Add one or more routes.
-   * @param  {...{method: string, url: string, [preHandler]: (request, reply, done) => Promise<any>, handler: (request, reply) => Promise<any> }} routes
+   * @param {...Object} routes - Route objects
+   * @param {string} routes[].method - HTTP method
+   * @param {string} routes[].url - Route URL path
+   * @param {Function} [routes[].preHandler] - Optional pre-handler function
+   * @param {Function} routes[].handler - Route handler function
    */
   addRoutes(...routes) {
     routes.forEach(({ method, url, preHandler, handler }) => {
@@ -34,7 +38,10 @@ class Route {
 
   /**
    * Return an array of Fastify route definitions.
-   * @returns {Array<{method: string, url: string, handler: (request: any, reply: any) => Promise<any>}>} The list of registered routes.
+   * @returns {Object[]} The list of registered routes
+   * @property {string} method - HTTP method
+   * @property {string} url - Route URL path
+   * @property {Function} handler - Route handler function
    */
   getRoutes() {
     return this.routes;
