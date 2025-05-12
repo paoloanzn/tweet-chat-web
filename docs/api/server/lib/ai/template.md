@@ -20,7 +20,7 @@ Variables in the template should be in the format {{variableName}}.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| template | <code>string</code> \| <code>function</code> | The compiled template string or empty string if error |
+| template | <code>string</code> | The compiled template string or empty string if error |
 | error | <code>string</code> \| <code>null</code> | Error message if compilation failed, null otherwise |
 
 **Example**  
@@ -28,5 +28,4 @@ Variables in the template should be in the format {{variableName}}.
 const template = "Hello {{name}}!";
 const data = { name: "World" };
 const result = compileTemplate(template, data);
-// result.template() returns "Hello World!"
 ```
