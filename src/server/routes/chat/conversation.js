@@ -177,6 +177,56 @@ const routes = [
       }
     },
   },
+  {
+    method: "GET",
+    url: "/:conversationId",
+    preHandler: (request, reply, done) => {
+      authMiddleware(request, reply, done);
+    },
+    handler: async (request, reply) => {
+      const { conversationId } = request.params;
+      if (!conversationId) {
+        reply.status(400).send({
+          status: "error",
+          message: "Missing conversationId parameter.",
+        });
+        return;
+      }
+
+      const conversationManager = new ConversationManager();
+      try {
+        const userId = request.user.sub;
+        const { data, error } = await conversationManager.getConversation(
+          conversationId,
+          userId,
+        );
+        if (error) {
+          logger.error(`Error executing query: ${error}`);
+          reply.status(500).send({
+            status: "error",
+            message: "Internal Server Error while fetching conversation.",
+          });
+          return;
+        }
+        if (!data || data.length === 0) {
+          reply.status(404).send({
+            status: "error",
+            message: "Conversation not found.",
+          });
+          return;
+        }
+        reply.send({ status: "success", data: data[0] });
+      } catch (error) {
+        logger.error(`Error while fetching conversation: ${error}`);
+        reply.status(500).send({
+          status: "error",
+          message: "Internal Server Error while fetching conversation.",
+        });
+      } finally {
+        await conversationManager.close();
+      }
+    },
+  },
 ];
 
 conversationRoute.addRoutes(...routes);

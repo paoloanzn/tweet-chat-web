@@ -60,6 +60,22 @@ class PersonaManager extends IDatabase {
     }
     return this.query(sql, [userId, personaId]);
   }
+
+  /**
+   * Gets a specific persona by its ID.
+   *
+   * @param {string} personaId - The persona's ID.
+   * @returns {Promise<{ data: Array, error: any }>}
+   */
+  async getPersonaById(personaId) {
+    const sql = await this.loadQuery("get_persona_by_id.sql");
+    if (!sql) {
+      throw new Error(
+        "Query not authorized or not found: get_persona_by_id.sql",
+      );
+    }
+    return this.query(sql, [personaId]);
+  }
 }
 
 export default PersonaManager;

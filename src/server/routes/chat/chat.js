@@ -11,6 +11,7 @@ import ConversationManager from "../../db/ConversationManager.js";
 import { compileTemplate } from "../../lib/ai/template.js";
 import { chatTemplate } from "../../lib/persona/prompt-templates.js";
 import { isValidMessage } from "../../lib/chat/message.js";
+import PersonaManager from "../../db/PersonaManager.js";
 
 const chatRoute = new Route("/chat");
 
@@ -79,6 +80,7 @@ const routes = [
       reply.send(responseStream);
 
       const conversationManager = new ConversationManager();
+      const personaManager = new PersonaManager();
       try {
         const userId = request.user.sub;
         // Get current conversation and verify ownership
@@ -96,6 +98,20 @@ const routes = [
 
         const conversation = conversationData[0];
 
+        // Fetch the persona data
+        const { data: personaData, error: personaError } =
+          await personaManager.getPersonaById(conversation.persona_id);
+
+        if (personaError) {
+          throw new Error(`Error fetching persona: ${personaError}`);
+        }
+
+        if (!personaData || personaData.length === 0) {
+          throw new Error(
+            `Persona not found for ID: ${conversation.persona_id}`,
+          );
+        }
+
         // Add user message to messages array
         const userMessage = {
           role: "user",
@@ -111,7 +127,7 @@ const routes = [
         const { template, error: templateError } = compileTemplate(
           chatTemplate,
           {
-            persona: JSON.stringify(conversation.conversation.persona),
+            persona: JSON.stringify(personaData[0].data, null, 2),
             conversation: formatConversation(messages),
           },
         );
@@ -122,7 +138,7 @@ const routes = [
 
         let aiResponse = "";
         const { error: generateError } = await generateText(
-          template(),
+          template,
           ModelProvider.OPENAI,
           (textPart) => {
             aiResponse += textPart;
@@ -185,6 +201,7 @@ const routes = [
           responseStream.end();
         }
         await conversationManager.close();
+        await personaManager.close();
       }
     },
   },

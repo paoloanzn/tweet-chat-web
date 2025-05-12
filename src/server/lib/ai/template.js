@@ -5,13 +5,12 @@
  * @param {string} template - The template string containing variables to replace
  * @param {Object} data - Object containing key-value pairs to replace variables
  * @returns {Object} Result object containing either the compiled template or an error
- * @property {(string|function)} template - The compiled template string or empty string if error
+ * @property {(string)} template - The compiled template string or empty string if error
  * @property {(string|null)} error - Error message if compilation failed, null otherwise
  * @example
  * const template = "Hello {{name}}!";
  * const data = { name: "World" };
  * const result = compileTemplate(template, data);
- * // result.template() returns "Hello World!"
  */
 export function compileTemplate(template, data) {
   let compiledTemplate = "";
@@ -25,12 +24,12 @@ export function compileTemplate(template, data) {
 
   const regex = /{{\s*([a-zA-Z0-9_]+)\s*}}/g;
 
-  compiledTemplate = () => {
+  compiledTemplate = (() => {
     return template.replace(regex, (match, varName) => {
       // If the variable exists in data, return its value; otherwise, keep the placeholder
       return varName in data ? data[varName] : match;
     });
-  };
+  })();
 
   return { template: compiledTemplate, error: null };
 }
