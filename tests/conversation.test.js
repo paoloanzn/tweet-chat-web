@@ -244,4 +244,49 @@ describe("Conversation Endpoints", () => {
       expect(response.status).toBe(500); // Should return 500 for invalid UUID
     });
   });
+
+  describe("GET /conversation/:conversationId", () => {
+    it("should retrieve a specific conversation", async () => {
+      const response = await fetch(
+        `http://localhost:3000/conversation/${conversationId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        },
+      );
+
+      const data = await response.json();
+      expect(response.status).toBe(200);
+      expect(data.status).toBe("success");
+      expect(data.data).toHaveProperty("id");
+      expect(data.data).toHaveProperty("conversation");
+      expect(data.data.id).toBe(conversationId);
+    });
+
+    it("should return 404 for non-existent conversation", async () => {
+      const nonExistentId = "00000000-0000-0000-0000-000000000000";
+      const response = await fetch(
+        `http://localhost:3000/conversation/${nonExistentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        },
+      );
+
+      const data = await response.json();
+      expect(response.status).toBe(404);
+      expect(data.status).toBe("error");
+      expect(data.message).toBe("Conversation not found.");
+    });
+
+    it("should fail when accessing conversation without authentication", async () => {
+      const response = await fetch(
+        `http://localhost:3000/conversation/${conversationId}`,
+      );
+
+      expect(response.status).toBe(401);
+    });
+  });
 });
