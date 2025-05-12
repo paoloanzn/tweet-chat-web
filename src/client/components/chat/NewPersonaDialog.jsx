@@ -1,0 +1,109 @@
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader2 } from "lucide-react";
+
+export function NewPersonaDialog({ open, onOpenChange, onPersonaCreated }) {
+  const [username, setUsername] = useState("");
+  const [maxTweets, setMaxTweets] = useState(100);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { getAuthHeader } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      // Remove @ if user included it
+      const cleanUsername = username.replace("@", "");
+
+      const response = await fetch("http://localhost:3000/persona/add-new", {
+        method: "POST",
+        headers: {
+          ...getAuthHeader(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user: cleanUsername,
+          maxTweets: parseInt(maxTweets),
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to create persona");
+      }
+
+      await onPersonaCreated();
+      onOpenChange(false);
+      setUsername("");
+      setMaxTweets(100);
+    } catch (error) {
+      setError(error.message || "Failed to create persona");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOpenChange = (open) => {
+    if (!open) {
+      setError("");
+      setUsername("");
+      setMaxTweets(100);
+    }
+    onOpenChange(open);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create New Persona</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Twitter Username</label>
+              <Input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="@username"
+                disabled={isLoading}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                Max Tweets to Analyze
+              </label>
+              <Input
+                type="number"
+                value={maxTweets}
+                onChange={(e) => setMaxTweets(e.target.value)}
+                min="1"
+                max="1000"
+                disabled={isLoading}
+              />
+            </div>
+            {error && <div className="text-sm text-red-500">{error}</div>}
+          </div>
+          <DialogFooter className="mt-4">
+            <Button type="submit" disabled={isLoading || !username.trim()}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Create Persona
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
