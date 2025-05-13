@@ -209,44 +209,63 @@ describe("Chat Endpoints", () => {
     });
 
     it("should maintain message history limit", async () => {
-      // Send fewer messages to avoid timeout, but enough to test the limit
-      // We'll send 12 messages which will result in 24 entries (12 user + 12 AI responses)
-      // This should be enough to verify the MAX_MESSAGE_HISTORY (20) limit
-      const messages = Array.from(
-        { length: 12 },
-        (_, i) => `Test message ${i}`,
+      // Create an array of 20 messages (10 user + 10 persona messages alternating)
+      const initialMessages = Array.from({ length: 20 }, (_, i) => ({
+        role: i % 2 === 0 ? "user" : "persona",
+        message: `Test message ${Math.floor(i / 2)}`,
+        timestamp: Math.floor(Date.now() / 1000) - (20 - i), // Timestamps in ascending order
+      }));
+
+      // Update conversation with initial 20 messages
+      const updateResponse = await fetch(
+        `http://localhost:3000/conversation/update/${conversationId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({
+            conversationData: {
+              title: "test",
+              messages: initialMessages,
+            },
+          }),
+        },
       );
 
-      // Set a longer timeout for this specific test
-      // @vitest-environment-options {"testTimeout": 30000}
+      expect(updateResponse.status).toBe(200);
 
-      for (const message of messages) {
-        const response = await fetch(
-          `http://localhost:3000/chat/new-message/${conversationId}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`,
-            },
-            body: JSON.stringify({ content: message }),
+      // Send one new message to trigger the history limit check
+      const chatResponse = await fetch(
+        `http://localhost:3000/chat/new-message/${conversationId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
           },
-        );
+          body: JSON.stringify({
+            content: "This should trim the oldest message",
+          }),
+        },
+      );
 
-        // For each message, we need to consume the stream to completion
-        const reader = response.body.getReader();
-        try {
-          while (true) {
-            const { done } = await reader.read();
-            if (done) break;
-          }
-        } finally {
-          reader.releaseLock();
+      expect(chatResponse.status).toBe(200);
+
+      // Consume the stream to ensure the message is processed
+      const reader = chatResponse.body.getReader();
+      try {
+        while (true) {
+          const { done } = await reader.read();
+          if (done) break;
         }
+      } finally {
+        reader.releaseLock();
       }
 
-      // Check conversation messages
-      const response = await fetch(
+      // Verify the conversation state
+      const verifyResponse = await fetch(
         `http://localhost:3000/conversation/list/${personaId}`,
         {
           headers: {
@@ -255,18 +274,24 @@ describe("Chat Endpoints", () => {
         },
       );
 
-      const data = await response.json();
+      const data = await verifyResponse.json();
       const conversation = data.data.find((conv) => conv.id === conversationId);
 
-      // Each message generates 2 entries (user + persona)
-      // MAX_MESSAGE_HISTORY (20) should be enforced
+      // Should still have MAX_MESSAGE_HISTORY (20) messages
       expect(conversation.conversation.messages.length).toBe(20);
 
-      // Verify the messages are the most recent ones
-      const lastUserMessage = conversation.conversation.messages.find(
-        (msg) => msg.role === "user" && msg.message === "Test message 11",
+      // Verify the oldest messages were removed and newest ones are present
+      const messages = conversation.conversation.messages;
+
+      // The first message should not be "Test message 0" anymore
+      expect(messages[0].message).not.toBe("Test message 0");
+
+      // The last two messages should be our new message and the AI's response
+      expect(messages[messages.length - 2].role).toBe("user");
+      expect(messages[messages.length - 2].message).toBe(
+        "This should trim the oldest message",
       );
-      expect(lastUserMessage).toBeDefined();
+      expect(messages[messages.length - 1].role).toBe("persona");
     });
 
     it("should deny access to conversation owned by different user", async () => {
