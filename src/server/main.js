@@ -11,34 +11,65 @@ import { getScraper } from "./lib/scraper/scraper.js";
 import { login } from "./lib/scraper/login.js";
 import chatRoute from "./routes/chat/chat.js";
 
-await setupServer();
-const scraper = getScraper();
-const { success } = await login(scraper);
-console.log(success);
+const serverConfig = {
+  port: 3000,
+  host: "0.0.0.0",
+};
 
-const fastify = Fastify({ logger: false });
+const allowedOrigins = Object.freeze([
+  "localhost",
+  "127.0.0.1",
+  "tweet-chat-web.vercel.app",
+]);
 
-await fastify.register(cors, {
-  origin: "http://localhost:5173", // Allow requests specifically from your frontend origin
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow common methods
-});
+const corsOriginPolicy = (origin, cb) => {
+  // When running tests origin headers is undefined
+  if (process.env.NODE_ENV === "development" && !origin) {
+    cb(null, true);
+    return;
+  }
 
-// Register routes
-healthRoute.register(fastify);
-authRoute.register(fastify);
-personaRoute.register(fastify);
-conversationRoute.register(fastify);
-chatRoute.register(fastify);
+  const hostname = new URL(origin).hostname;
+  if (allowedOrigins.includes(hostname)) {
+    cb(null, true);
+    return;
+  }
 
-// run the server!
+  cb(new Error("Not allowed"), false);
+};
+
 const start = async () => {
+  // Basic server setup routines
+  await setupServer();
+  const scraper = getScraper();
+  const { success, error } = await login(scraper);
+  if (!success) {
+    logger.error(error);
+    process.exit(1);
+  }
+
+  const fastify = Fastify({ logger: false });
+  await fastify.register(cors, {
+    origin: corsOriginPolicy,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  });
+
+  // Register routes
+  healthRoute.register(fastify);
+  authRoute.register(fastify);
+  personaRoute.register(fastify);
+  conversationRoute.register(fastify);
+  chatRoute.register(fastify);
+
   try {
-    await fastify.listen({ port: 3000, host: "0.0.0.0" });
-    fastify.log.info(`Server listening on ${fastify.server.address()}`);
-  } catch (err) {
-    fastify.log.error(err);
+    await fastify.listen({ port: serverConfig.port, host: serverConfig.host });
+    logger.info(
+      `Server running on ${JSON.stringify(fastify.server.address())}`,
+    );
+  } catch (error) {
+    logger.error(error);
     process.exit(1);
   }
 };
-logger.info("Starting server...");
+
 start();

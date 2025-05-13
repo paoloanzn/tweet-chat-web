@@ -1,4 +1,7 @@
 import { create } from "zustand";
+import { getApiBaseUrl } from "../config";
+
+const API_BASE_URL = getApiBaseUrl();
 
 const useChatStore = create((set, get) => ({
   // Personas state
@@ -25,7 +28,7 @@ const useChatStore = create((set, get) => ({
   // API Actions
   fetchPersonas: async (getAuthHeader) => {
     try {
-      const response = await fetch("http://localhost:3000/persona/list", {
+      const response = await fetch(`${API_BASE_URL}/persona/list`, {
         headers: getAuthHeader(),
       });
       const { data } = await response.json();
@@ -44,7 +47,7 @@ const useChatStore = create((set, get) => ({
     if (!personaId) return;
     try {
       const response = await fetch(
-        `http://localhost:3000/conversation/list/${personaId}`,
+        `${API_BASE_URL}/conversation/list/${personaId}`,
         { headers: getAuthHeader() },
       );
       const { data } = await response.json();
@@ -58,20 +61,17 @@ const useChatStore = create((set, get) => ({
 
   createNewConversation: async (personaId, getAuthHeader) => {
     try {
-      const response = await fetch(
-        "http://localhost:3000/conversation/add-new",
-        {
-          method: "POST",
-          headers: {
-            ...getAuthHeader(),
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            personaId,
-            conversationData: { messages: [] },
-          }),
+      const response = await fetch(`${API_BASE_URL}/conversation/add-new`, {
+        method: "POST",
+        headers: {
+          ...getAuthHeader(),
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          personaId,
+          conversationData: { messages: [] },
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to create conversation");
@@ -135,7 +135,7 @@ const useChatStore = create((set, get) => ({
 
       // Step 3: Send message using the confirmed conversation ID
       const response = await fetch(
-        `http://localhost:3000/chat/new-message/${conversationId}`,
+        `${API_BASE_URL}/chat/new-message/${conversationId}`,
         {
           method: "POST",
           headers: {
@@ -192,7 +192,7 @@ const useChatStore = create((set, get) => ({
 
   loadConversation: async (id, getAuthHeader) => {
     try {
-      const response = await fetch(`http://localhost:3000/conversation/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/conversation/${id}`, {
         headers: getAuthHeader(),
       });
       const { data } = await response.json();
@@ -207,7 +207,7 @@ const useChatStore = create((set, get) => ({
   deleteConversation: async (id, getAuthHeader) => {
     const state = get();
     try {
-      await fetch(`http://localhost:3000/conversation/${id}`, {
+      await fetch(`${API_BASE_URL}/conversation/${id}`, {
         method: "DELETE",
         headers: getAuthHeader(),
       });

@@ -71,6 +71,7 @@ async function loadScraperAccounts() {
     await accountManager.close();
   } catch (error) {
     logger.error("Error loading scraper accounts:", error);
+    process.exit(1);
   }
 }
 
