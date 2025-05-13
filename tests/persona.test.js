@@ -43,7 +43,6 @@ describe("Persona Endpoints", () => {
         },
         body: JSON.stringify({
           user: "apollonator3000",
-          maxTweets: 20,
         }),
       });
 
@@ -64,7 +63,6 @@ describe("Persona Endpoints", () => {
         },
         body: JSON.stringify({
           user: "", // Invalid user
-          maxTweets: "not a number", // Invalid maxTweets type
         }),
       });
 

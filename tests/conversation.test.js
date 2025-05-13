@@ -47,7 +47,6 @@ describe("Conversation Endpoints", () => {
         },
         body: JSON.stringify({
           user: "apollonator3000",
-          maxTweets: 20,
         }),
       },
     );

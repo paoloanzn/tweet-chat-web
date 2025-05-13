@@ -13,7 +13,6 @@ import { Loader2 } from "lucide-react";
 
 export function NewPersonaDialog({ open, onOpenChange, onPersonaCreated }) {
   const [username, setUsername] = useState("");
-  const [maxTweets, setMaxTweets] = useState(100);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const { getAuthHeader } = useAuth();
@@ -35,7 +34,6 @@ export function NewPersonaDialog({ open, onOpenChange, onPersonaCreated }) {
         },
         body: JSON.stringify({
           user: cleanUsername,
-          maxTweets: parseInt(maxTweets),
         }),
       });
 
@@ -47,7 +45,6 @@ export function NewPersonaDialog({ open, onOpenChange, onPersonaCreated }) {
       await onPersonaCreated();
       onOpenChange(false);
       setUsername("");
-      setMaxTweets(100);
     } catch (error) {
       setError(error.message || "Failed to create persona");
     } finally {
@@ -59,7 +56,6 @@ export function NewPersonaDialog({ open, onOpenChange, onPersonaCreated }) {
     if (!open) {
       setError("");
       setUsername("");
-      setMaxTweets(100);
     }
     onOpenChange(open);
   };
@@ -78,19 +74,6 @@ export function NewPersonaDialog({ open, onOpenChange, onPersonaCreated }) {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="@username"
-                disabled={isLoading}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                Max Tweets to Analyze
-              </label>
-              <Input
-                type="number"
-                value={maxTweets}
-                onChange={(e) => setMaxTweets(e.target.value)}
-                min="1"
-                max="1000"
                 disabled={isLoading}
               />
             </div>

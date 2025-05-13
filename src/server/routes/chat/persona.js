@@ -1,84 +1,14 @@
-import {
-  generateText,
-  ModelProvider,
-  ModelType,
-} from "../../lib/ai/provider.js";
 import logger from "../../lib/logger.js";
 import { authMiddleware } from "../../lib/middleware.js";
 import Route from "../route.js";
-import { PassThrough } from "stream";
 import PersonaManager from "../../db/PersonaManager.js";
 
 const MAX_MESSAGE_LENGTH = 5 * 1000;
+const MAX_TWEETS = 10;
 
 const personaRoute = new Route("/persona");
 
 const routes = [
-  /*
-  {
-    method: "POST",
-    url: "/new/message/:conversationId",
-    preHandler: (request, reply, done) => {
-      authMiddleware(request, reply, done);
-    },
-    handler: async (request, reply) => {
-      const { content } = request.body;
-      if (!content) {
-        reply.status(400).send({
-          status: "error",
-          message: "Missing content.",
-        });
-        return;
-      }
-
-      if (content > MAX_MESSAGE_LENGTH) {
-        reply.status(400).send({
-          status: "error",
-          message: "Content exceeded max allowed character length.",
-        });
-        return;
-      }
-
-      // set SSE headers for streaming
-      reply
-        .header("Content-Type", "text/event-stream")
-        .header("Cache-Control", "no-cache")
-        .header("Connection", "keep-alive");
-
-      const responseStream = new PassThrough();
-      reply.send(responseStream);
-
-      try {
-        const { error } = await generateText(
-          "Hi bro!",
-          ModelProvider.OPENAI,
-          (textPart) =>
-            responseStream.write(
-              `data: ${JSON.stringify({ text: textPart })}\n\n`,
-            ),
-          ModelType.MEDIUM,
-        );
-
-        if (error) {
-          throw new Error(error);
-        }
-      } catch (error) {
-        logger.error(`Error in generateText: ${error}`);
-        if (!responseStream.writableEnded) {
-          responseStream.write(
-            `event: error\ndata: ${JSON.stringify({
-              message: "Internal Server Error.",
-            })}\n\n`,
-          );
-        }
-      } finally {
-        if (!responseStream.writableEnded) {
-          responseStream.end();
-        }
-      }
-    },
-  },
-  */
   {
     method: "POST",
     url: "/add-new",
@@ -86,18 +16,11 @@ const routes = [
       authMiddleware(request, reply, done);
     },
     handler: async (request, reply) => {
-      const { user, maxTweets } = request.body;
-      if (!user || !maxTweets) {
+      const { user } = request.body;
+      if (!user) {
         reply.status(400).send({
           status: "error",
           message: "Missing user or maxTweets in request body.",
-        });
-        return;
-      }
-      if (typeof maxTweets != "number") {
-        reply.status(400).send({
-          status: "error",
-          message: 'maxTweets must be of type "number".',
         });
         return;
       }
@@ -107,7 +30,7 @@ const routes = [
         const userId = request.user.sub;
         const { data, error } = await personaManager.addPersonaForUser(userId, {
           user,
-          maxTweets,
+          maxTweets: MAX_TWEETS,
         });
         if (error) {
           logger.error(`Error executing query: ${error}`);
