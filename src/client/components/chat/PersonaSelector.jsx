@@ -78,13 +78,16 @@ export function PersonaSelector({ collapsed }) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="w-full p-0 cursor-pointer">
+          <Button
+            variant="ghost"
+            className={`w-full p-0 cursor-pointer ${!collapsed ? "border rounded-(--radius)" : ""}`}
+          >
             <div
               className={`flex items-center ${collapsed ? "justify-center" : "justify-start"} gap-2`}
             >
               {currentPersona ? (
                 <>
-                  <Avatar className="h-9 w-9">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage
                       src={currentPersona.data?.profile?.avatar}
                       alt={currentPersona.name}
@@ -110,7 +113,7 @@ export function PersonaSelector({ collapsed }) {
           {personas.map((persona) => (
             <DropdownMenuItem
               key={persona.id}
-              className="flex justify-between items-center cursor-pointer"
+              className="flex justify-between items-center cursor-pointer my-1 rounded-(--radius)"
               onSelect={() => handlePersonaSelect(persona)}
             >
               <div className="flex items-center gap-2">
@@ -139,7 +142,7 @@ export function PersonaSelector({ collapsed }) {
             </DropdownMenuItem>
           ))}
           <DropdownMenuItem
-            className="cursor-pointer"
+            className="cursor-pointer rounded-(--radius)"
             onSelect={() => setIsNewPersonaOpen(true)}
           >
             <Plus className="mr-2 h-4 w-4" />

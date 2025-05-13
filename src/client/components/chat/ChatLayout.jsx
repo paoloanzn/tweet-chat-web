@@ -80,7 +80,7 @@ export function ChatLayout() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="cursor-pointer"
+                  className="cursor-pointer border rounded-(--radius)"
                   onClick={() => setIsCollapsed(false)}
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -88,7 +88,7 @@ export function ChatLayout() {
               </div>
             ) : (
               // Expanded state
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 mx-3">
                 <div className="flex-1 pt-2">
                   <PersonaSelector
                     collapsed={false}
@@ -98,7 +98,7 @@ export function ChatLayout() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="cursor-pointer"
+                  className="cursor-pointer border rounded-(--radius)"
                   onClick={() => setIsCollapsed(true)}
                 >
                   <ChevronLeft className="h-4 w-4" />

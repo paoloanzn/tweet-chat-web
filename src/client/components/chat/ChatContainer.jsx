@@ -37,7 +37,7 @@ export function ChatContainer() {
 
   return (
     <div className="flex flex-col h-full relative bg-background">
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto no-scroll-bar">
         {!isEmpty ? (
           <div className="p-4">
             <MessageList />

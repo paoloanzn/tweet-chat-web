@@ -44,16 +44,16 @@ export function ChatInput({ disabled, isEmpty }) {
 
   const inputWrapperClasses = cn(
     "flex items-center gap-2",
-    "relative border rounded-xl bg-background",
-    isEmpty ? "p-4" : "p-2",
+    "relative border rounded-xl bg-input",
+    isEmpty ? "p-4" : "p-4 justify-self-center w-[50%]",
   );
 
   return (
     <div className={formClasses}>
       {isEmpty && (
-        <h1 className="text-2xl font-semibold text-center mb-2">
+        <div className="text-3xl text-center mb-2 text-primary-foreground font-sans">
           Start the conversation
-        </h1>
+        </div>
       )}
       <form onSubmit={handleSubmit} className="w-full">
         <div className={inputWrapperClasses}>
@@ -65,14 +65,14 @@ export function ChatInput({ disabled, isEmpty }) {
             onKeyDown={handleKeyPress}
             placeholder="Type a message..."
             disabled={disabled}
-            className="min-h-[20px] max-h-[200px] shadow-none resize-none focus:outline-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 p-0"
+            className="min-h-[20px] max-h-[200px] shadow-none resize-none focus:outline-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 p-3 bg-input text-secondary-foreground placeholder:font-mono no-scroll-bar"
             rows={1}
           />
           <Button
             type="submit"
             disabled={disabled || !message.trim() || isStreaming}
             size="icon"
-            className="rounded-full h-8 w-8 bg-primary hover:bg-primary/90"
+            className="rounded-full h-8 w-8 bg-input hover:bg-primary/90 cursor-pointer"
           >
             {isStreaming ? (
               <Loader2 className="h-4 w-4 animate-spin text-white" />

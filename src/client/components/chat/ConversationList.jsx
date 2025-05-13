@@ -46,11 +46,14 @@ export function ConversationList({ collapsed }) {
     <div className="flex flex-col h-full">
       {!collapsed && (
         <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-sm font-semibold">Conversations</h2>
+          <div className="text-sm font-sans font-semibold mx-3">
+            Conversations
+          </div>
           <Button
             onClick={handleCreateNewConversation}
             variant="ghost"
             size="icon"
+            className="cursor-pointer border rounded-(--radius) mx-3"
             disabled={!currentPersona?.id}
           >
             <Plus className="h-4 w-4" />
@@ -58,13 +61,14 @@ export function ConversationList({ collapsed }) {
         </div>
       )}
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 overflow-y-auto">
         {conversations.map((conversation) => (
           <div
             key={conversation.id}
             className={cn(
-              "group flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-accent",
-              currentConversation?.id === conversation.id && "bg-accent",
+              "group flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-accent/80 hover:text-accent-foreground rounded-(--radius) mx-3 my-2 font-mono text-sm",
+              currentConversation?.id === conversation.id &&
+                "bg-primary text-primary-foreground",
             )}
             onClick={() => setCurrentConversation(conversation)}
           >
@@ -81,7 +85,7 @@ export function ConversationList({ collapsed }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="opacity-0 group-hover:opacity-100"
+                className="opacity-0 group-hover:opacity-100 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   deleteConversation(conversation.id, getAuthHeader);

@@ -22,7 +22,9 @@ export function SignUpForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 mt-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email" className="text-secondary-foreground">
+          Email
+        </Label>
         <Input
           id="email"
           type="email"
@@ -32,7 +34,9 @@ export function SignUpForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="text-secondary-foreground">
+          Password
+        </Label>
         <Input
           id="password"
           type="password"
