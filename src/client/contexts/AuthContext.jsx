@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { getApiBaseUrl } from "../config";
 
 const API_BASE_URL = getApiBaseUrl();
 
