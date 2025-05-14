@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 
+const API_BASE_URL = getApiBaseUrl();
+
 const AuthContext = createContext(null);
 
 // Helper to manage localStorage
@@ -37,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
   const signIn = async (email, password) => {
     try {
-      const response = await fetch("http://localhost:3000/auth/sign-in", {
+      const response = await fetch(`${API_BASE_URL}/auth/sign-in`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +64,7 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password) => {
     try {
-      const response = await fetch("http://localhost:3000/auth/sign-up", {
+      const response = await fetch(`${API_BASE_URL}/auth/sign-up`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
