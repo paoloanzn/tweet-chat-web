@@ -30,7 +30,7 @@ export function NewPersonaDialog({ open, onOpenChange, onPersonaCreated }) {
       // Remove @ if user included it
       const cleanUsername = username.replace("@", "");
 
-      const response = await fetch(`http://${API_BASE_URL}/persona/add-new`, {
+      const response = await fetch(`${API_BASE_URL}/persona/add-new`, {
         method: "POST",
         headers: {
           ...getAuthHeader(),
