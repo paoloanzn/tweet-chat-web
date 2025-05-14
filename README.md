@@ -36,7 +36,7 @@ A web application for chatting with AI personas trained on Twitter data. The pro
 
 - Frontend: React, TailwindCSS, Radix UI
 - Backend: Node.js, Fastify, PostgreSQL
-- AI: OpenAI SDK
+- AI: ai SDK
 - Testing: Vitest
 - Infrastructure: Supabase, Google Cloud Platform
 - DevOps: Docker, Terraform
