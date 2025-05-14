@@ -12,7 +12,7 @@ import { login } from "./lib/scraper/login.js";
 import chatRoute from "./routes/chat/chat.js";
 
 const serverConfig = {
-  port: 3000,
+  port: 8080,
   host: "0.0.0.0",
 };
 
@@ -62,12 +62,15 @@ const start = async () => {
   chatRoute.register(fastify);
 
   try {
-    await fastify.listen({ port: serverConfig.port, host: serverConfig.host });
+    await fastify.listen({
+      port: process.env.PORT || serverConfig.port,
+      host: serverConfig.host,
+    });
     logger.info(
       `Server running on ${JSON.stringify(fastify.server.address())}`,
     );
   } catch (error) {
-    logger.error(error);
+    logger.error(error.stack);
     process.exit(1);
   }
 };

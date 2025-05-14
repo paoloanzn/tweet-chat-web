@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
 import { getApiBaseUrl } from "../../config";
-import { APICallError } from "ai";
 
 const API_BASE_URL = getApiBaseUrl();
 

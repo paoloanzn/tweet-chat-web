@@ -36,7 +36,19 @@ class IDatabase {
     if (process.env.NODE_ENV != "development") {
       this.AUTHORIZED_QUERIES = Object.freeze({
         queries: [
-          // queries filenames here
+          "add_scraper_account.sql",
+          "delete_conversation.sql",
+          "delete_user_persona.sql",
+          "get_conversation.sql",
+          "get_conversations.sql",
+          "get_persona_by_id.sql",
+          "get_scraper_account_by_username.sql",
+          "get_scraper_accounts.sql",
+          "get_user_personas.sql",
+          "insert_conversation.sql",
+          "update_conversation.sql",
+          "update_scraper_account_cookies.sql",
+          "upsert_user_persona.sql",
         ],
       });
     }
