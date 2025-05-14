@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log
+src/client
+supabase
+dist
+dist-client
+.git
+.gitignore
+.env
+.env.*
+README.md
+docs
+*.test.js
+*.spec.js
+coverage 

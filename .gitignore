@@ -27,3 +27,31 @@ dist-client
 codebase.md
 accounts.csv
 .env
+terraform.tfvars
+terraform/*.json
+
+# Compiled files
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
+*.lock.hcl
+
+# logs
+*.log
+
+# Directories
+.terraform/
+.vagrant/
+
+# SSH Keys
+*.pem
+
+# Backup files
+*.bak
+
+# Ignored Terraform files
+*gitignore*.tf
+
+# Sentinel runtime directory
+.sentinel
