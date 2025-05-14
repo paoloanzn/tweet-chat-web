@@ -10,6 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
+import { getApiBaseUrl } from "../../config";
+import { APICallError } from "ai";
+
+const API_BASE_URL = getApiBaseUrl();
 
 export function NewPersonaDialog({ open, onOpenChange, onPersonaCreated }) {
   const [username, setUsername] = useState("");
@@ -26,7 +30,7 @@ export function NewPersonaDialog({ open, onOpenChange, onPersonaCreated }) {
       // Remove @ if user included it
       const cleanUsername = username.replace("@", "");
 
-      const response = await fetch("http://localhost:3000/persona/add-new", {
+      const response = await fetch(`http://${API_BASE_URL}/persona/add-new`, {
         method: "POST",
         headers: {
           ...getAuthHeader(),
