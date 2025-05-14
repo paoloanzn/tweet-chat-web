@@ -1,6 +1,6 @@
 # tweet-chat-web
 
-[API Documentation](docs/api/server/README.md)
+[API Documentation](docs/)
 
 
 A web application for chatting with AI personas trained on Twitter data. The project consists of:
