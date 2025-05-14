@@ -1,12 +1,66 @@
-# React + Vite
+# tweet-chat-web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[API Documentation](docs/api/server/README.md)
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+A web application for chatting with AI personas trained on Twitter data. The project consists of:
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `/src` - Main application code
+  - `/client` - React frontend application
+    - `/assets` - Static assets and images
+    - `/components` - Reusable UI components including auth, chat and UI primitives
+    - `/contexts` - React context providers
+    - `/lib` - Frontend utilities
+    - `/store` - Zustand state management
+  - `/server` - Backend Node.js server using Fastify
+    - `/db` - Database managers and SQL queries
+    - `/lib` - Core business logic (AI, chat, persona, scraper)
+    - `/routes` - API route handlers
+
+- `/docs` - API documentation
+  - `/api/server` - Backend API docs for database, libraries and routes
+
+- `/scripts` - Utility scripts for deployment and migrations
+
+- `/supabase` - Database configuration
+  - `/migrations` - SQL migration files
+  - `/schemas` - Database schema definitions
+
+- `/terraform` - Infrastructure as code for GCP deployment
+
+- `/tests` - Integration and unit tests
+
+## Key Technologies
+
+- Frontend: React, TailwindCSS, Radix UI
+- Backend: Node.js, Fastify, PostgreSQL
+- AI: OpenAI SDK
+- Testing: Vitest
+- Infrastructure: Supabase, Google Cloud Platform
+- DevOps: Docker, Terraform
+
+## Configuration Files
+- `docker-compose.yml` & `Dockerfile` - Container configuration
+- `vite.config.js` - Frontend build config
+- `eslint.config.js` - Code linting rules
+- `components.json` - UI component configurations
+
+## Available Commands
+
+- `npm run dev` - Start development server (both frontend and backend)
+- `npm run dev:vite` - Start frontend development server
+- `npm run dev:server` - Start backend development server
+- `npm run build` - Build frontend for production
+- `npm run preview` - Preview production build locally
+- `npm run clean` - Remove build artifacts
+- `npm run lint` - Run ESLint code linting
+- `npm run format` - Format code with Prettier
+- `npm run test` - Run tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run migrate` - Apply database migrations
+- `npm run migrate:push` - Push migrations to database
+- `npm run docs:generate` - Generate API documentation
+
+
